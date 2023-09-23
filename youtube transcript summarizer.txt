@@ -1,0 +1,89 @@
+python
+
+from transformers import pipeline
+from youtube_transcript_api import YouTubeTranscriptApi
+from IPython.display import YouTubeVideo
+
+
+Here, you import the necessary libraries. You're using the Transformers library to access a summarization pipeline, the YouTubeTranscriptApi to fetch the transcript of a YouTube video, and YouTubeVideo to display the video in an IPython environment.
+
+
+yotube_video = "https://www.youtube.com/watch?v=BE-L7xu8pO4"
+video_id = yotube_video.split("=")[1]
+print(video_id)
+
+
+You set the YouTube video URL and extract the video ID by splitting the URL at the '=' character. You then print the video ID.
+
+
+YouTubeVideo(video_id)
+
+
+This line displays the YouTube video in your IPython environment.
+
+
+transcript = YouTubeTranscriptApi.get_transcript(video_id)
+print(transcript[0:5])
+
+
+You use the YouTubeTranscriptApi to fetch the transcript of the video using the video ID. Then, you print the first 5 entries of the transcript. This fetches and displays the initial part of the video's transcript.
+
+
+
+result = ""
+for i in transcript:
+    result += ' ' + i['text']
+
+
+You initialize an empty string result, and then you iterate through each entry in the transcript and concatenate the text from each entry into the result string. This combines all the transcript text into a single string.
+
+
+print(len(result))
+
+
+This line prints the total length (number of characters) of the combined transcript text.
+
+
+summarizer = pipeline(task="summarization")
+
+
+You create a summarization pipeline using the Transformers library. This pipeline is set up to perform summarization tasks.
+
+
+num_iters = int(len(result)/1000)
+summarized_text = []
+for i in range(0, num_iters + 1):
+    start = 0
+    start = i * 1000
+    end = (i + 1) * 1000
+    print("input text \n" + result[start:end])
+    out = summarizer(result[start:end])
+    out = out[0]
+    out = out['summary_text']
+    summarized_text.append(out)
+
+
+This section divides the combined transcript text into smaller chunks of 1000 characters each (to fit within the model's input limitations). It then iterates through these chunks, summarizes each chunk using the summarization pipeline, and appends the summarized text to the summarized_text list.
+
+
+print("\n\n\nSummarized")
+print(str(summarized_text))
+
+
+Here, you print the entire list of summarized text chunks.
+
+
+
+print("\n\n\nedited")
+print(str(summarized_text[0:40]))
+
+
+This line prints the first 40 chunks of summarized text, which represents the initial part of the summarization.
+
+
+str(summarized_text)
+
+
+The code attempts to convert the summarized_text list into a string but doesn't assign this string to any variable or print it. You might consider assigning it to a variable or printing it if needed.
+
+Overall, this code fetches the transcript of a YouTube video, divides the transcript into smaller chunks, summarizes each chunk, and stores the summarized text in a list. It also displays the video and various parts of the transcript and summarized text.
